@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="uk.ac.gla.idi.beaconexample.MainActivity">
+
+    <item
+        android:id="@+id/action_mode_balanced"
+        android:title="Balanced scan"
+        android:visible="true" />
+    <item
+        android:id="@+id/action_mode_lowlat"
+        android:title="Low latency scan"
+        android:visible="true" />
+</menu>

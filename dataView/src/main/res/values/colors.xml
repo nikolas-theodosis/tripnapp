@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <color name="normal_background">#40000000</color>
+    <color name="normal_title">@android:color/white</color>
+    <color name="normal_unit">#ffaaaaaa</color>
+    <color name="normal_value">#ffaaaaaa</color>
+        
+    <color name="big_background">#80000000</color>
+    <color name="big_title">@android:color/white</color>
+    <color name="big_unit">#ffaaaaaa</color>
+    <color name="big_value">@android:color/white</color>
+        
+    <color name="big_no_title_background">#80000000</color>    
+    <color name="big_no_title_unit">#ffaaaaaa</color>
+    <color name="big_no_title_value">@android:color/white</color>
+    
+</resources>

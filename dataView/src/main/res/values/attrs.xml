@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DataViewOptions">
+        <attr name="titleText" format="string"/>
+        <attr name="unitText" format="string"/>
+        <attr name="valueText" format="string"/>
+        <attr name="dvlayout" format="reference"/>
+        <attr name="dvicon" format="reference"/>
+    </declare-styleable>
+    
+</resources> 

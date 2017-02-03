@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="uk.ac.gla.idi.beaconexample.MainActivity"
+    tools:showIn="@layout/activity_main"
+    android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btnToggleScan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Start scanning"/>
+
+        <TextView
+            android:id="@+id/textHeader"
+            android:layout_width="368dp"
+            android:layout_height="wrap_content"
+            android:text="Nearby beacons:"
+            android:textAppearance="@style/TextAppearance.AppCompat" />
+
+        <ListView
+            android:id="@+id/listResults"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:layout_weight="1" />
+
+        <com.jjoe64.graphview.GraphView
+            android:id="@+id/graph"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_weight="1" />
+
+</LinearLayout>

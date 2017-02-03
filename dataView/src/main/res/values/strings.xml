@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Temperature</string>
+    <string name="action_info">Show device information</string>    
+</resources>
