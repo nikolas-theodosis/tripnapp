@@ -75,87 +75,87 @@ public class MainActivity extends Activity {
 
         // create the adapter used to populate the list of beacons and attach it to the widget
         scanAdapter = new ScanResultArrayAdapter(this);
-        final ListView scanResults = (ListView) findViewById(R.id.listResults);
-        scanResults.setAdapter(scanAdapter);
-
-        // set up a click handler which sets/updates the selected beacon
-        scanResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                // retrieve the adapter and get the selected item from it
-                ScanResultArrayAdapter adapter = (ScanResultArrayAdapter) adapterView.getAdapter();
-                BeaconInfo newSelectedBeacon = adapter.getItem(position);
-                Log.i(TAG, "Tapped beacon " + newSelectedBeacon.name);
-                if(!isScanning)
-                    return;
-
-                // if the selected beacon is being changed
-                if(selectedBeacon == null || !newSelectedBeacon.equals(selectedBeacon)) {
-                    // reset both data series (doesn't seem to be a clear() method...)
-                    DataPoint[] dp = new DataPoint[1];
-                    dp[0] = new DataPoint(lastx, newSelectedBeacon.rssi);
-                    rawRssi.resetData(dp);
-                    basicFilteredRssi.resetData(dp);
-
-                    // ask for a redraw of the list widget so that the selected item highlight
-                    // is updated to match the new item
-                    scanResults.invalidateViews();
-                }
-
-                selectedBeacon = newSelectedBeacon;
-            }
-
-        });
+//        final ListView scanResults = (ListView) findViewById(R.id.listResults);
+//        scanResults.setAdapter(scanAdapter);
+//
+//        // set up a click handler which sets/updates the selected beacon
+//        scanResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+//                // retrieve the adapter and get the selected item from it
+//                ScanResultArrayAdapter adapter = (ScanResultArrayAdapter) adapterView.getAdapter();
+//                BeaconInfo newSelectedBeacon = adapter.getItem(position);
+//                Log.i(TAG, "Tapped beacon " + newSelectedBeacon.name);
+//                if(!isScanning)
+//                    return;
+//
+//                // if the selected beacon is being changed
+//                if(selectedBeacon == null || !newSelectedBeacon.equals(selectedBeacon)) {
+//                    // reset both data series (doesn't seem to be a clear() method...)
+//                    DataPoint[] dp = new DataPoint[1];
+//                    dp[0] = new DataPoint(lastx, newSelectedBeacon.rssi);
+//                    rawRssi.resetData(dp);
+//                    basicFilteredRssi.resetData(dp);
+//
+//                    // ask for a redraw of the list widget so that the selected item highlight
+//                    // is updated to match the new item
+//                    scanResults.invalidateViews();
+//                }
+//
+//                selectedBeacon = newSelectedBeacon;
+//            }
+//
+//        });
 
         // set up a handler for taps on the start/stop scanning button
-        toggleScan = (Button) findViewById(R.id.btnToggleScan);
-        toggleScan.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                toggleScan();
-            }
-
-        });
-
-        // retrieve the BluetoothManager instance and check if Bluetooth is enabled. If not the
-        // user will be prompted to enable it and the response will be checked in onActivityResult
-        final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        bleDev = bluetoothManager.getAdapter();
-        if (bleDev == null || !bleDev.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        }
-
-        GraphView graph = (GraphView) findViewById(R.id.graph);
-
-        // create and add data series to the graph
-        rawRssi = new LineGraphSeries<>();
-        basicFilteredRssi = new LineGraphSeries<>();
-        graph.addSeries(rawRssi);
-        graph.addSeries(basicFilteredRssi);
-
-        // configure axes
-        Viewport viewport = graph.getViewport();
-        viewport.setXAxisBoundsManual(true);
-        viewport.setMinX(0);
-        viewport.setMaxX(100); // 10s of data visible at 10Hz update rate
-        viewport.setYAxisBoundsManual(true);
-        viewport.setMinY(-100);
-        viewport.setMaxY(-10);
-
-        // configure the data series
-        rawRssi.setColor(Color.argb(255, 255, 0, 0));
-        rawRssi.setThickness(3);
-        rawRssi.setTitle("Raw");
-        basicFilteredRssi.setColor(Color.argb(255, 0, 128, 128));
-        basicFilteredRssi.setThickness(3);
-        basicFilteredRssi.setTitle("Filtered");
-
-        // add a legend
-        graph.getLegendRenderer().setVisible(true);
-        graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+//        toggleScan = (Button) findViewById(R.id.btnToggleScan);
+//        toggleScan.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View view) {
+//                toggleScan();
+//            }
+//
+//        });
+//
+//        // retrieve the BluetoothManager instance and check if Bluetooth is enabled. If not the
+//        // user will be prompted to enable it and the response will be checked in onActivityResult
+//        final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+//        bleDev = bluetoothManager.getAdapter();
+//        if (bleDev == null || !bleDev.isEnabled()) {
+//            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+//            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+//        }
+//
+//        GraphView graph = (GraphView) findViewById(R.id.graph);
+//
+//        // create and add data series to the graph
+//        rawRssi = new LineGraphSeries<>();
+//        basicFilteredRssi = new LineGraphSeries<>();
+//        graph.addSeries(rawRssi);
+//        graph.addSeries(basicFilteredRssi);
+//
+//        // configure axes
+//        Viewport viewport = graph.getViewport();
+//        viewport.setXAxisBoundsManual(true);
+//        viewport.setMinX(0);
+//        viewport.setMaxX(100); // 10s of data visible at 10Hz update rate
+//        viewport.setYAxisBoundsManual(true);
+//        viewport.setMinY(-100);
+//        viewport.setMaxY(-10);
+//
+//        // configure the data series
+//        rawRssi.setColor(Color.argb(255, 255, 0, 0));
+//        rawRssi.setThickness(3);
+//        rawRssi.setTitle("Raw");
+//        basicFilteredRssi.setColor(Color.argb(255, 0, 128, 128));
+//        basicFilteredRssi.setThickness(3);
+//        basicFilteredRssi.setTitle("Filtered");
+//
+//        // add a legend
+//        graph.getLegendRenderer().setVisible(true);
+//        graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
     }
 
     @Override
