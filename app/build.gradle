@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 22
+    compileSdkVersion 25
     buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "uk.ac.gla.idi.beaconexample"
@@ -20,11 +20,15 @@ android {
     }
 }
 
+ext {
+    supportLibVersion = '25.0.0'  // variable that can be referenced to keep support libs consistent
+}
+
 dependencies {
     compile project(':dataView')
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:22.2.1'
-    compile 'com.android.support:design:22.2.1'
+    compile "com.android.support:appcompat-v7:${supportLibVersion}"
+    compile "com.android.support:design:${supportLibVersion}"
     compile 'com.jjoe64:graphview:4.0.1'
 }
 
