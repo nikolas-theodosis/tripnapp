@@ -20,7 +20,7 @@ public class MainActivity extends Activity {
         FloatingActionButton toggleScan = (FloatingActionButton) findViewById(R.id.btnStartTrip);
         toggleScan.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, SelectDestinationActivity.class);
+                Intent intent = new Intent(MainActivity.this, SelectLineActivity.class);
                 startActivity(intent);
             }
         });
