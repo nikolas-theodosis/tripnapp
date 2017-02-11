@@ -6,7 +6,6 @@
     tools:context="uk.ac.gla.idi.beaconexample.SelectDestinationActivity"
     tools:showIn="@layout/activity_main"
     android:orientation="vertical">
-
     <Button
         android:id="@+id/btnToggleScan"
         android:layout_width="match_parent"
