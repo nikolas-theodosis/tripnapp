@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MHCI.iml" filepath="$PROJECT_DIR$/MHCI.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/dataView/dataView.iml" filepath="$PROJECT_DIR$/dataView/dataView.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mhci.iml" filepath="$PROJECT_DIR$/mhci.iml" />
     </modules>
   </component>
 </project>

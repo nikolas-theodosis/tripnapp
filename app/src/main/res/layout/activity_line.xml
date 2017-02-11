@@ -1,0 +1,71 @@
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <AbsoluteLayout
+            android:id="@+id/viewA"
+            android:layout_width="match_parent"
+            android:layout_height="281dp"
+            android:background="@android:color/holo_orange_light"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:text="-OR-"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_width="wrap_content"
+                android:id="@+id/labelOR"
+                android:layout_height="wrap_content"
+                android:layout_x="175dp"
+                android:layout_y="245dp" />
+
+            <TextView
+                android:text="Select Line:"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_width="wrap_content"
+                android:id="@+id/labelLine"
+                android:layout_height="40dp"
+                android:layout_x="139dp"
+                android:layout_y="24dp" />
+
+            <Button
+                android:layout_width="194dp"
+                android:layout_height="78dp"
+                android:id="@+id/btnOuter"
+
+                android:elevation="0dp"
+                android:visibility="visible"
+                android:layout_x="93dp"
+                android:layout_y="125dp"
+                android:text="Outer Line" />
+        </AbsoluteLayout>
+
+
+        <AbsoluteLayout
+            android:id="@+id/viewB"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/darker_gray"
+            android:orientation="horizontal">
+
+            <Button
+                             android:layout_width="194dp"
+                android:layout_height="78dp"
+                android:layout_x="93dp"
+                android:layout_y="66dp"
+                android:id="@+id/btnInner"
+                android:visibility="visible"
+                android:text="Inner Line" />
+        </AbsoluteLayout>
+    </LinearLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>
