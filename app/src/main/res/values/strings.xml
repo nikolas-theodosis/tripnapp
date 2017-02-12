@@ -6,4 +6,6 @@
     <string name="tab_outer">Outer</string>
     <string name="select_line_title">Select your destination</string>
     <string name="dialog_departure_station">You are at %1$s!. Do you wish to start your trip from here?</string>
+    <string name="progress_dialog_title">Searching</string>
+    <string name="progress_dialog_message">Trying to find out in which station you are right now...</string>
 </resources>

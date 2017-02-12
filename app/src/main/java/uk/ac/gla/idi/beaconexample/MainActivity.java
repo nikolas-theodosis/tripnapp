@@ -1,5 +1,6 @@
 package uk.ac.gla.idi.beaconexample;
 
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -9,15 +10,11 @@ import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -28,6 +25,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 
 
 public class MainActivity extends AppCompatActivity{
@@ -42,6 +40,7 @@ public class MainActivity extends AppCompatActivity{
     // currently selected beacon, if any
     private BeaconInfo selectedBeacon = null;
     private HashMap<String, String> beaconStationMap = new HashMap<>();
+    private ProgressDialog progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,8 +137,11 @@ public class MainActivity extends AppCompatActivity{
             }
         }
 
-        //Toast.makeText(this, "Starting BLE scan...", Toast.LENGTH_SHORT).show();
-
+        progress = new ProgressDialog(this);
+        progress.setTitle(getResources().getString(R.string.progress_dialog_title));
+        progress.setMessage(getResources().getString(R.string.progress_dialog_message));
+        progress.setCancelable(true); // disable dismiss by tapping outside of the dialog
+        progress.show();
 
         List<ScanFilter> filters = new ArrayList<>();
         ScanSettings settings = new ScanSettings.Builder().setScanMode(scanMode).build();
@@ -172,15 +174,14 @@ public class MainActivity extends AppCompatActivity{
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        AlertDialog myAlertDialog = null;
 
                         // retrieve device info and add to or update existing set of beacon data
-                        String name = dev.getName();
                         String address = dev.getAddress();
                         String station = beaconStationMap.get(address);
 
                         if (station != null) {
                             stopScan();
+                            progress.dismiss();
                             Intent intent = new Intent(MainActivity.this, SelectLineActivity.class);
                             intent.putExtra("DEPARTURE_STATION", station);
                             startActivity(intent);
@@ -203,19 +204,5 @@ public class MainActivity extends AppCompatActivity{
             Log.w(TAG, "ScanFailed(" + errorCode + ")");
         }
     };
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-
-        return super.onOptionsItemSelected(item);
-    }
 
 }
