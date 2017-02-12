@@ -7,18 +7,35 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+
 public class OuterDestinationsFragment extends ListFragment implements AdapterView.OnItemClickListener {
 
-    String[] outerArray = {"St. Enoch", "Bridge Street","West Street","Shields Road","Kinning Park","Cessnock","Ibrox","Govan",
-                        "Partick", "Kelvinhall","Hillhead","Kelvinbridge","St George's Cross" ,"Cowcaddens"};
-
-
+    private ArrayList<String> stations = new ArrayList<>();
+    private ArrayList<String> nextStops = new ArrayList<>();
+    private String DEPARTURE_STATION = null;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            DEPARTURE_STATION = bundle.getString("DEPARTURE_STATION", "");
+            stations = bundle.getStringArrayList("STATIONS");
+        }
+
+        if (!stations.get(stations.size() - 1).equals(DEPARTURE_STATION)) {
+
+        }
+        int pos = stations.indexOf(DEPARTURE_STATION);
+        for (int i=pos ; i < stations.size() ; i++)
+            nextStops.add(stations.get(i));
+        for (int j=0 ; j < pos ; j++)
+            nextStops.add(stations.get(j));
+
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_1, outerArray);
+                android.R.layout.simple_list_item_1, nextStops);
         setListAdapter(adapter);
     }
 
