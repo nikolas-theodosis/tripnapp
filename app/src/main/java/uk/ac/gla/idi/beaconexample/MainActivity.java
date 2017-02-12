@@ -1,27 +1,54 @@
 package uk.ac.gla.idi.beaconexample;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.BluetoothLeScanner;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanFilter;
+import android.bluetooth.le.ScanResult;
+import android.bluetooth.le.ScanSettings;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity{
 
+    private static final String TAG = SelectDestinationActivity.class.getSimpleName();
     private BluetoothAdapter bleDev = null;
     // request ID for enabling Bluetooth
     private static final int REQUEST_ENABLE_BT = 1000;
+    private boolean isScanning = false;
+    private BluetoothLeScanner scanner = null;
+    private int scanMode = ScanSettings.SCAN_MODE_BALANCED;
+    // currently selected beacon, if any
+    private BeaconInfo selectedBeacon = null;
+    private HashMap<String, String> beaconStationMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        loadStationsBeaconsFromFile();
         FloatingActionButton toggleScan = (FloatingActionButton) findViewById(R.id.btnStartTrip);
         toggleScan.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -31,8 +58,31 @@ public class MainActivity extends AppCompatActivity{
                     Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                     startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
                 }
+                else {
+                    toggleScan();
+                }
             }
         });
+    }
+
+    /*
+    saves the mac address and the corresponding station from
+    the txt raw file to the hashmap where key = mac address and
+    value = station name
+     */
+    private void loadStationsBeaconsFromFile() {
+        BufferedReader reader;
+        String record;
+        String[] data;
+        try {
+            InputStream ins = getApplicationContext().getResources().getAssets().open("beacons");
+            reader = new BufferedReader(new InputStreamReader(ins));
+            record = reader.readLine();
+            data = record.split("=");
+            beaconStationMap.put(data[0], data[1]);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -49,8 +99,10 @@ public class MainActivity extends AppCompatActivity{
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if ((requestCode == REQUEST_ENABLE_BT) && (resultCode == RESULT_OK))
         {
-            Intent intent = new Intent(MainActivity.this, SelectLineActivity.class);
-            startActivity(intent);
+            toggleScan();
+
+          
+            
             boolean isEnabling = bleDev.enable();
             if (!isEnabling)
             {
@@ -67,6 +119,90 @@ public class MainActivity extends AppCompatActivity{
             }
         }
     }
+
+    private void toggleScan() {
+        if(!isScanning)
+            startScan();
+        else
+            stopScan();
+    }
+
+    private void startScan() {
+        if(scanner == null) {
+            scanner = bleDev.getBluetoothLeScanner();
+            if(scanner == null) {
+                // probably tried to start a scan without granting Bluetooth permission
+                Toast.makeText(this, "Failed to start scan (BT permission granted?)", Toast.LENGTH_LONG).show();
+                Log.w(TAG, "Failed to get BLE scanner instance");
+                return;
+            }
+        }
+
+        //Toast.makeText(this, "Starting BLE scan...", Toast.LENGTH_SHORT).show();
+
+
+        List<ScanFilter> filters = new ArrayList<>();
+        ScanSettings settings = new ScanSettings.Builder().setScanMode(scanMode).build();
+        scanner.startScan(filters, settings, bleScanCallback);
+        isScanning = true;
+    }
+
+    private void stopScan() {
+        if(scanner != null && isScanning) {
+           // Toast.makeText(this, "Stopping BLE scan...", Toast.LENGTH_SHORT).show();
+            isScanning = false;
+            Log.i(TAG, "Scan stopped");
+            scanner.stopScan(bleScanCallback);
+        }
+
+        selectedBeacon = null;
+    }
+
+    // class implementing BleScanner callbacks
+    private ScanCallback bleScanCallback = new ScanCallback() {
+
+        @Override
+        public void onScanResult(int callbackType, ScanResult result) {
+            super.onScanResult(callbackType, result);
+
+            final BluetoothDevice dev = result.getDevice();
+            final int rssi = result.getRssi();
+
+            if(dev != null && isScanning) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        AlertDialog myAlertDialog = null;
+
+                        // retrieve device info and add to or update existing set of beacon data
+                        String name = dev.getName();
+                        String address = dev.getAddress();
+                        String station = beaconStationMap.get(address);
+
+                        if (station != null) {
+                            stopScan();
+                            Intent intent = new Intent(MainActivity.this, SelectLineActivity.class);
+                            intent.putExtra("DEPARTURE_STATION", station);
+                            startActivity(intent);
+                        }
+                    }
+
+                });
+            }
+        }
+
+        @Override
+        public void onBatchScanResults(List<ScanResult> results) {
+            super.onBatchScanResults(results);
+            Log.d(TAG, "BatchScanResult(" + results.size() + " results)");
+        }
+
+        @Override
+        public void onScanFailed(int errorCode) {
+            super.onScanFailed(errorCode);
+            Log.w(TAG, "ScanFailed(" + errorCode + ")");
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
