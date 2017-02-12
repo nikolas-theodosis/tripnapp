@@ -33,17 +33,16 @@ public class InnerDestinationsFragment extends ListFragment implements AdapterVi
         for (int j=stations.size()-1 ; j > pos ; j--)
             nextStops.add(stations.get(j));
 
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_1, nextStops);
-        setListAdapter(adapter);
+        setListAdapter(new CustomDepartureListAdapter(getContext(), nextStops));
     }
 
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        Intent intent = new Intent(getActivity(), SelectDestinationActivity.class);
-        startActivity(intent);
+        if (position != 0) {
+            Intent intent = new Intent(getActivity(), SelectDestinationActivity.class);
+            startActivity(intent);
+        }
     }
 
     @Override

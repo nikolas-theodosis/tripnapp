@@ -34,9 +34,7 @@ public class OuterDestinationsFragment extends ListFragment implements AdapterVi
             nextStops.add(stations.get(j));
 
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_1, nextStops);
-        setListAdapter(adapter);
+        setListAdapter(new CustomDepartureListAdapter(getContext(), nextStops));
     }
 
     @Override
