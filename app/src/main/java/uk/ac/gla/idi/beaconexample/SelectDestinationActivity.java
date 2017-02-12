@@ -68,7 +68,7 @@ public class SelectDestinationActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_select_destination);
+        setContentView(R.layout.content_select_destination);
 
         // create a handler for executing graph updates
         graphHandler = new Handler();
