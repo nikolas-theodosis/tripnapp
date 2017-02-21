@@ -35,6 +35,7 @@
             android:label="@string/select_line_title"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".SelectDestinationActivity"/>
+        <activity android:name=".Settings"/>
 
 
 
