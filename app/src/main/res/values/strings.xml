@@ -9,4 +9,12 @@
     <string name="progress_dialog_title">Searching</string>
     <string name="progress_dialog_message">Trying to find out in which station you are right now...</string>
     <string name="settings_stations">How early to wake me up</string>
+    <string-array name="number_of_stations_array">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
 </resources>
