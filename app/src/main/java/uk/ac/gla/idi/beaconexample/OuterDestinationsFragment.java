@@ -55,19 +55,17 @@ public class OuterDestinationsFragment extends ListFragment implements AdapterVi
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         // TODO implement some logic
+        if (position != 0) {
+            while (selected==false){
+                v.setBackgroundColor(Color.RED);
+                selected=true;
+                DESTINATION_STATION=getListAdapter().getItem(position).toString();
+                Toast.makeText(getContext(),getListAdapter().getItem(position).toString()+" Is selected",Toast.LENGTH_LONG).show();
+            }
 
-        while (selected==false){
-            v.setBackgroundColor(Color.RED);
-            selected=true;
-            DESTINATION_STATION=getListAdapter().getItem(position).toString();
-            Toast.makeText(getContext(),getListAdapter().getItem(position).toString()+" Is selected",Toast.LENGTH_LONG).show();
-        }
-        if (l.getCheckedItemPosition() == position) {
-            v.setBackgroundColor(Color.RED);
-        }
-
-
-       if (position != 0) {
+            if (l.getCheckedItemPosition() == position) {
+                v.setBackgroundColor(Color.RED);
+            }
 
             Intent intent = new Intent(getActivity(), TripMonitorActivity.class);
             intent.putExtra("DEPARTURE_STATION",DEPARTURE_STATION);
@@ -78,7 +76,7 @@ public class OuterDestinationsFragment extends ListFragment implements AdapterVi
 
 
             startActivity(intent);
-       }
+        }else{Toast.makeText(getContext(),"You are already there!!!",Toast.LENGTH_LONG).show();}
     }
 
     @Override

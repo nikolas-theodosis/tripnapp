@@ -44,7 +44,6 @@ public class TripMonitorActivity extends AppCompatActivity {
     private BluetoothLeScanner mLEScanner;
     private ScanSettings settings;
 
-    private BluetoothGatt mGatt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,11 +100,6 @@ public class TripMonitorActivity extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    protected void onDestroy() {
-//
-//        super.onDestroy();
-//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -120,27 +114,32 @@ public class TripMonitorActivity extends AppCompatActivity {
     }
 
     private void scanLeDevice(final boolean enable) {
-        if (enable) {
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
-                        mLEScanner.stopScan(mScanCallback);
-
-
-                }
-            }, SCAN_PERIOD);
-
-               // mLEScanner.startScan(filters, settings, mScanCallback);
-           // mLEScanner.startScan(filters, settings, mScanCallback);
+        if (enable)
             mLEScanner.startScan(mScanCallback);
-
-        } else {
-
-                mLEScanner.stopScan(mScanCallback);
-
-        }
+        else
+            mLEScanner.stopScan(mScanCallback);
     }
+
+//    private void scanLeDevice(final boolean enable) {
+//        if (enable) {
+//            mHandler.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                        mLEScanner.stopScan(mScanCallback);
+//                }
+//            }, SCAN_PERIOD);
+//
+//               // mLEScanner.startScan(filters, settings, mScanCallback);
+//           // mLEScanner.startScan(filters, settings, mScanCallback);
+//            mLEScanner.startScan(mScanCallback);
+//
+//        }
+//        else {
+//
+//                mLEScanner.stopScan(mScanCallback);
+//
+//        }
+//    }
 
 
     private ScanCallback mScanCallback = new ScanCallback() {
