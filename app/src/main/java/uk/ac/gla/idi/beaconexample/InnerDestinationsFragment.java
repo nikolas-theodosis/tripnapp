@@ -1,12 +1,16 @@
 package uk.ac.gla.idi.beaconexample;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 
 public class InnerDestinationsFragment extends ListFragment implements AdapterView.OnItemClickListener {
@@ -14,6 +18,17 @@ public class InnerDestinationsFragment extends ListFragment implements AdapterVi
     private ArrayList<String> stations = new ArrayList<>();
     private ArrayList<String> nextStops = new ArrayList<>();
     private String DEPARTURE_STATION = null;
+    private String DESTINATION_STATION = null;
+    private boolean selected=false;
+    private int pos;
+
+
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        selected=false;
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -39,9 +54,46 @@ public class InnerDestinationsFragment extends ListFragment implements AdapterVi
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
+        // TODO implement some logic
+        pos = position;
         if (position != 0) {
-            Intent intent = new Intent(getActivity(), SelectDestinationActivity.class);
-            startActivity(intent);
+            while (selected == false) {
+                //v.setBackgroundColor(Color.RED);
+                selected = true;
+                DESTINATION_STATION = getListAdapter().getItem(position).toString();
+                Toast.makeText(getContext(), getListAdapter().getItem(position).toString() + " Is selected", Toast.LENGTH_LONG).show();
+            }
+
+            if (l.getCheckedItemPosition() == position) {
+                v.setBackgroundColor(Color.RED);
+            }
+
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage("From " + DEPARTURE_STATION + " to " + DESTINATION_STATION + "?")
+                    .setTitle("Start trip")
+                    .setPositiveButton("Start", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Intent intent = new Intent(getActivity(), TripMonitorActivity.class);
+                            intent.putExtra("DEPARTURE_STATION", DEPARTURE_STATION);
+                            intent.putExtra("DESTINATION_STATION", DESTINATION_STATION);
+                            intent.putExtra("DIRECTION", "Inner");
+                            intent.putExtra("POSITION", pos);
+                            //intent.putStringArrayListExtra("NEXT_STOPS",nextStops);
+
+                            startActivity(intent);
+                        }
+                    })
+                    .setNegativeButton("Go back", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                            InnerDestinationsFragment.this.onResume();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+        } else {
+            Toast.makeText(getContext(), "You are already there!!!", Toast.LENGTH_LONG).show();
         }
     }
 
