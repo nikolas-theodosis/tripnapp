@@ -25,10 +25,8 @@ ext {
 }
 
 dependencies {
-    compile project(':dataView')
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile "com.android.support:appcompat-v7:${supportLibVersion}"
     compile "com.android.support:design:${supportLibVersion}"
-    compile 'com.jjoe64:graphview:4.0.1'
 }
 
