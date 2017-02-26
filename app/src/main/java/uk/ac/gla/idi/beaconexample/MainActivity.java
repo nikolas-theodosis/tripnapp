@@ -32,7 +32,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = SelectDestinationActivity.class.getSimpleName();
+    private static final String TAG = MainActivity.class.getSimpleName();
     private BluetoothAdapter bleDev = null;
     // request ID for enabling Bluetooth
     private static final int REQUEST_ENABLE_BT = 1000;
