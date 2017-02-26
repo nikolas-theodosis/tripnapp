@@ -33,9 +33,9 @@
         </activity>
         <activity android:name=".SelectLineActivity"
             android:label="@string/select_line_title"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity" /> 
         <activity android:name=".SelectDestinationActivity"/><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+	     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
         <activity android:name=".TripMonitorActivity"
             android:label="Sit back and enjoy your nap!"
             android:parentActivityName=".SelectDestinationActivity" />
@@ -43,6 +43,8 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+        <activity android:name=".AboutActivity"
+                  android:theme = "@android:style/Theme.Dialog"/>
 
 
     </application>

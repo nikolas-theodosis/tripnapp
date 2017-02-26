@@ -10,9 +10,11 @@ import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -28,7 +30,7 @@ import java.util.List;
 
 
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = SelectDestinationActivity.class.getSimpleName();
     private BluetoothAdapter bleDev = null;
@@ -56,13 +58,40 @@ public class MainActivity extends AppCompatActivity{
                 if (bleDev == null || !bleDev.isEnabled()) {
                     Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                     startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-                }
-                else {
+                } else {
                     toggleScan();
                 }
             }
         });
+
+        FloatingActionButton aboutButton = (FloatingActionButton) findViewById(R.id.btnAbout);
+        aboutButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this, AboutActivity.class);
+                startActivity(i);
+            }
+        });
+
+        FloatingActionButton exitButton = (FloatingActionButton) findViewById(R.id.btnExit);
+        exitButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder
+                        .setTitle("Exit")
+                        .setMessage("Do you want to exit Tripnapp?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                                System.exit(0);
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+            }
+        });
     }
+
 
     /*
     saves the mac address and the corresponding station from
@@ -96,19 +125,14 @@ public class MainActivity extends AppCompatActivity{
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if ((requestCode == REQUEST_ENABLE_BT) && (resultCode == RESULT_OK))
-        {
+        if ((requestCode == REQUEST_ENABLE_BT) && (resultCode == RESULT_OK)) {
             toggleScan();
 
-          
-            
+
             boolean isEnabling = bleDev.enable();
-            if (!isEnabling)
-            {
+            if (!isEnabling) {
                 // an immediate error occurred - perhaps the bluetooth is already on?
-            }
-            else if (bleDev.getState() == BluetoothAdapter.STATE_TURNING_ON)
-            {
+            } else if (bleDev.getState() == BluetoothAdapter.STATE_TURNING_ON) {
                 // the system, in the background, is trying to turn the Bluetooth on
                 // while your activity carries on going without waiting for it to finish;
                 // of course, you could listen for it to finish yourself - eg, using a
@@ -120,16 +144,16 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private void toggleScan() {
-        if(!isScanning)
+        if (!isScanning)
             startScan();
         else
             stopScan();
     }
 
     private void startScan() {
-        if(scanner == null) {
+        if (scanner == null) {
             scanner = bleDev.getBluetoothLeScanner();
-            if(scanner == null) {
+            if (scanner == null) {
                 // probably tried to start a scan without granting Bluetooth permission
                 Toast.makeText(this, "Failed to start scan (BT permission granted?)", Toast.LENGTH_LONG).show();
                 Log.w(TAG, "Failed to get BLE scanner instance");
@@ -150,8 +174,8 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private void stopScan() {
-        if(scanner != null && isScanning) {
-           // Toast.makeText(this, "Stopping BLE scan...", Toast.LENGTH_SHORT).show();
+        if (scanner != null && isScanning) {
+            // Toast.makeText(this, "Stopping BLE scan...", Toast.LENGTH_SHORT).show();
             isScanning = false;
             Log.i(TAG, "Scan stopped");
             scanner.stopScan(bleScanCallback);
@@ -170,7 +194,7 @@ public class MainActivity extends AppCompatActivity{
             final BluetoothDevice dev = result.getDevice();
             final int rssi = result.getRssi();
 
-            if(dev != null && isScanning) {
+            if (dev != null && isScanning) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -204,5 +228,6 @@ public class MainActivity extends AppCompatActivity{
             Log.w(TAG, "ScanFailed(" + errorCode + ")");
         }
     };
+
 
 }

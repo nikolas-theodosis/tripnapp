@@ -21,6 +21,7 @@
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="-100dp"
             android:layout_gravity="center">
 
                 <android.support.design.widget.FloatingActionButton
@@ -37,6 +38,58 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="@string/startBtn"
+                    android:elevation="16dp"
+                    android:textColor="@android:color/white"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="300dp"
+            android:layout_gravity="center">
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/btnAbout"
+                    android:layout_width="74dp"
+                    android:layout_height="103dp"
+                    android:layout_margin="16dp"
+                    android:clickable="true"
+                    app:layout_anchor="@id/viewA"
+                    app:layout_anchorGravity="bottom|center"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/aboutBtn"
+                    android:elevation="16dp"
+                    android:textColor="@android:color/white"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="410dp"
+            android:layout_marginLeft="270dp"
+            android:layout_gravity="center_vertical|center_horizontal"
+            app:layout_anchorGravity="bottom|right">
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/btnExit"
+                    android:layout_width="61dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:clickable="true"
+                    app:layout_anchor="@id/viewA"
+                    app:layout_anchorGravity="bottom|center"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/exitBtn"
                     android:elevation="16dp"
                     android:textColor="@android:color/white"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
