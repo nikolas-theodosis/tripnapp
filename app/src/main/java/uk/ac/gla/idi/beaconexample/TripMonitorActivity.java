@@ -4,7 +4,6 @@ package uk.ac.gla.idi.beaconexample;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
@@ -15,15 +14,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-
-
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,7 +51,7 @@ public class TripMonitorActivity extends AppCompatActivity {
         text.setText("Departure Station: " + getIntent().getStringExtra("DEPARTURE_STATION"));
         text2.setText("Destined Station: " + getIntent().getStringExtra("DESTINATION_STATION"));
         text3.setText("Direction: " + getIntent().getStringExtra("DIRECTION"));
-        //text4.setText("NEXT STOPS"+getIntent().getStringArrayExtra("NEXT_STOPS"));
+
 
         mHandler = new Handler();
         //Check whether the phone supports BLE.
@@ -70,7 +65,6 @@ public class TripMonitorActivity extends AppCompatActivity {
         bleAdapter = bluetoothManager.getAdapter();
         loadStationsBeaconsFromFile();
 
-        //  Log.w(TAG, "onCreate: "+getIntent().getStringArrayExtra("NEXT_STOPS"));
 
 
     }
@@ -85,8 +79,9 @@ public class TripMonitorActivity extends AppCompatActivity {
                 mLEScanner = bleAdapter.getBluetoothLeScanner();
                 settings = new ScanSettings.Builder()
                         .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                       // .setScanMode(ScanSettings.SCAN_MODE_BALANCED)
                         .build();
-               // filters = new ArrayList<ScanFilter>();
+
             }
             scanLeDevice(true);
         }
@@ -153,8 +148,6 @@ public class TripMonitorActivity extends AppCompatActivity {
             String station = beaconStationMap.get(address);
             text4.setText("Current Station "+ station);
 
-//            BluetoothDevice btDevice = result.getDevice();
-//            connectToDevice(btDevice);
         }
 
         @Override
@@ -179,7 +172,7 @@ public class TripMonitorActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             Log.i("onLeScan", device.toString());
-                           // connectToDevice(device);
+
                         }
                     });
                 }
@@ -201,11 +194,4 @@ public class TripMonitorActivity extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    public void onBackPressed()
-//    {
-//        //mLEScanner.stopScan(mScanCallback);
-//        finish();
-//        //super.onDestroy();
-//    }
 }
