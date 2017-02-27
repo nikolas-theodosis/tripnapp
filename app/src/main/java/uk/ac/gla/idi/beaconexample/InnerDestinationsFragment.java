@@ -75,12 +75,13 @@ public class InnerDestinationsFragment extends ListFragment implements AdapterVi
                     .setPositiveButton("Start", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             Intent intent = new Intent(getActivity(), TripMonitorActivity.class);
-                            intent.putExtra("DEPARTURE_STATION", DEPARTURE_STATION);
-                            intent.putExtra("DESTINATION_STATION", DESTINATION_STATION);
-                            intent.putExtra("DIRECTION", "Inner");
-                            intent.putExtra("POSITION", pos);
-                            //intent.putStringArrayListExtra("NEXT_STOPS",nextStops);
-
+                            Bundle bundle = new Bundle();
+                            bundle.putString("DEPARTURE_STATION", DEPARTURE_STATION);
+                            bundle.putString("DESTINATION_STATION", DESTINATION_STATION);
+                            bundle.putString("DIRECTION", "Inner");
+                            bundle.putString("POSITION", "pos");
+                            bundle.putStringArrayList("NEXT_STOPS", nextStops);
+                            intent.putExtras(bundle);
                             startActivity(intent);
                         }
                     })

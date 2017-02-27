@@ -23,6 +23,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -38,6 +39,10 @@ public class TripMonitorActivity extends AppCompatActivity {
     private static final long SCAN_PERIOD = 10000;
     private BluetoothLeScanner mLEScanner;
     private ScanSettings settings;
+    private String DESTINATION_STATION;
+    private String DEPARTURE_STATION;
+    private String DIRECTION;
+    private ArrayList<String> next_stops = new ArrayList<>();
 
 
     @Override
@@ -48,9 +53,19 @@ public class TripMonitorActivity extends AppCompatActivity {
         text2 = (TextView) findViewById(R.id.textView2);
         text3 = (TextView) findViewById(R.id.textView3);
         text4 = (TextView) findViewById(R.id.textView4);
-        text.setText("Departure Station: " + getIntent().getStringExtra("DEPARTURE_STATION"));
-        text2.setText("Destined Station: " + getIntent().getStringExtra("DESTINATION_STATION"));
-        text3.setText("Direction: " + getIntent().getStringExtra("DIRECTION"));
+
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+            DEPARTURE_STATION = bundle.getString("DEPARTURE_STATION", "");
+            DESTINATION_STATION = bundle.getString("DESTINATION_STATION", "");
+            DIRECTION = bundle.getString("DIRECTION", "");
+            next_stops = bundle.getStringArrayList("STATIONS");
+        }
+
+        text.setText("Departure Station: " + DEPARTURE_STATION);
+        text2.setText("Destined Station: " + DESTINATION_STATION);
+        text3.setText("Direction: " + DIRECTION);
 
 
         mHandler = new Handler();
