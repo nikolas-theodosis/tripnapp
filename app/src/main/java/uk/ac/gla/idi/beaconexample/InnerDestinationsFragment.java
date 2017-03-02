@@ -69,7 +69,7 @@ public class InnerDestinationsFragment extends ListFragment implements AdapterVi
             }
 
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), android.R.style.Theme_Material_Dialog_Alert);
             builder.setMessage("From " + DEPARTURE_STATION + " to " + DESTINATION_STATION + "?")
                     .setTitle("Start trip")
                     .setPositiveButton("Start", new DialogInterface.OnClickListener() {
@@ -90,7 +90,8 @@ public class InnerDestinationsFragment extends ListFragment implements AdapterVi
                             // User cancelled the dialog
                             InnerDestinationsFragment.this.onResume();
                         }
-                    });
+                    })
+                    .setIcon(android.R.drawable.ic_media_play);
             AlertDialog alert = builder.create();
             alert.show();
         } else {
