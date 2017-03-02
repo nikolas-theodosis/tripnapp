@@ -56,13 +56,13 @@ public class OuterDestinationsFragment extends ListFragment implements AdapterVi
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         // TODO implement some logic
-        pos=position;
+        pos = position;
         if (position != 0) {
-            while (selected==false){
+            while (selected == false) {
                 //v.setBackgroundColor(Color.RED);
-                selected=true;
-                DESTINATION_STATION=getListAdapter().getItem(position).toString();
-                Toast.makeText(getContext(),getListAdapter().getItem(position).toString()+" Is selected",Toast.LENGTH_LONG).show();
+                selected = true;
+                DESTINATION_STATION = getListAdapter().getItem(position).toString();
+                Toast.makeText(getContext(), getListAdapter().getItem(position).toString() + " Is selected", Toast.LENGTH_LONG).show();
             }
 
             if (l.getCheckedItemPosition() == position) {
@@ -70,19 +70,19 @@ public class OuterDestinationsFragment extends ListFragment implements AdapterVi
             }
 
 
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage("From "+DEPARTURE_STATION+" to "+DESTINATION_STATION+"?")
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), android.R.style.Theme_Material_Dialog_Alert);
+            builder.setMessage("From " + DEPARTURE_STATION + " to " + DESTINATION_STATION + "?")
                     .setTitle("Start trip")
                     .setPositiveButton("Start", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             Intent intent = new Intent(getActivity(), TripMonitorActivity.class);
-                            intent.putExtra("DEPARTURE_STATION",DEPARTURE_STATION);
-                            intent.putExtra("DESTINATION_STATION",DESTINATION_STATION);
-                            intent.putExtra("DIRECTION","Outer");
-                            intent.putExtra("POSITION",pos);
-                            //intent.putStringArrayListExtra("NEXT_STOPS",nextStops);
-
+                            Bundle bundle = new Bundle();
+                            bundle.putString("DEPARTURE_STATION", DEPARTURE_STATION);
+                            bundle.putString("DESTINATION_STATION", DESTINATION_STATION);
+                            bundle.putString("DIRECTION", "Outer");
+                            bundle.putString("POSITION", "pos");
+                            bundle.putStringArrayList("NEXT_STOPS", nextStops);
+                            intent.putExtras(bundle);
                             startActivity(intent);
                         }
                     })
@@ -91,10 +91,13 @@ public class OuterDestinationsFragment extends ListFragment implements AdapterVi
                             // User cancelled the dialog
                             OuterDestinationsFragment.this.onResume();
                         }
-                    });
-            AlertDialog alert=builder.create();
+                    })
+                    .setIcon(android.R.drawable.ic_media_play);
+            AlertDialog alert = builder.create();
             alert.show();
-        }else{Toast.makeText(getContext(),"You are already there!!!",Toast.LENGTH_LONG).show();}
+        } else {
+            Toast.makeText(getContext(), "You are already there!!!", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
