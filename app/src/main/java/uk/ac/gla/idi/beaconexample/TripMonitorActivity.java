@@ -119,7 +119,30 @@ public class TripMonitorActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    blink();
+    }
 
+    private void blink(){
+        final Handler handler = new Handler();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int timeToBlink = 500;
+                try{Thread.sleep(timeToBlink);}catch (Exception e) {}
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        TextView txt = (TextView) findViewById(R.id.textView2);
+                        if(txt.getVisibility() == View.VISIBLE){
+                            txt.setVisibility(View.INVISIBLE);
+                        }else{
+                            txt.setVisibility(View.VISIBLE);
+                        }
+                        blink();
+                    }
+                });
+            }
+        }).start();
     }
 
     @Override
