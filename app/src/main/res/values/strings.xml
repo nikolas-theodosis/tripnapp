@@ -14,4 +14,8 @@
 when you reach your destination.Select your destination and that\'s all. Relax, take a nap and Tripnapp will do the rest!
     This app is part of a Mobile HCI project at University of Glasgow.
     Project Members are Nikos Theodosis, Panagiotis Papatheodosiou and Michalis Gregoriou</string>
+    <string name="cancelBtn">Cancel Trip</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
 </resources>

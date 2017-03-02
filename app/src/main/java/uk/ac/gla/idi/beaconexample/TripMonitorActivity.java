@@ -1,24 +1,36 @@
 package uk.ac.gla.idi.beaconexample;
 
 
-import android.app.Activity;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,13 +39,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import ng.max.slideview.SlideView;
+
 
 public class TripMonitorActivity extends AppCompatActivity {
 
-    private TextView text, text2, text3, text4;
-    private static final String TAG = "MyActivity";
+    private static final String TAG = TripMonitorActivity.class.getSimpleName();
     private HashMap<String, String> beaconStationMap = new HashMap<>();
-    private BluetoothAdapter bleAdapter;
+    private BluetoothAdapter bleDev;
     private int REQUEST_ENABLE_BT = 1;
     private Handler mHandler;
     private static final long SCAN_PERIOD = 10000;
@@ -43,33 +56,35 @@ public class TripMonitorActivity extends AppCompatActivity {
     private String DEPARTURE_STATION;
     private String DIRECTION;
     private ArrayList<String> next_stops = new ArrayList<>();
-
+    private String PREVIOUS_STOP;
+    private int pos;
+    private Ringtone r;
+    private BeaconInfo selectedBeacon = null;
+    private boolean isScanning = false;
+    private BluetoothLeScanner scanner = null;
+    private int scanMode = ScanSettings.SCAN_MODE_BALANCED;
+    private Vibrator vibrator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_monitor);
-        text = (TextView) findViewById(R.id.textView);
-        text2 = (TextView) findViewById(R.id.textView2);
-        text3 = (TextView) findViewById(R.id.textView3);
-        text4 = (TextView) findViewById(R.id.textView4);
-
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
             DEPARTURE_STATION = bundle.getString("DEPARTURE_STATION", "");
             DESTINATION_STATION = bundle.getString("DESTINATION_STATION", "");
             DIRECTION = bundle.getString("DIRECTION", "");
-            next_stops = bundle.getStringArrayList("STATIONS");
+            next_stops = bundle.getStringArrayList("NEXT_STOPS");
         }
+        for (int i=0 ; i < next_stops.size() ; i++) {
+            if (next_stops.get(i).toString().equals(DESTINATION_STATION)) {
+                pos = i - 1;
+                break;
+            }
+        }
+        PREVIOUS_STOP = next_stops.get(pos);
 
-        text.setText("Departure Station: " + DEPARTURE_STATION);
-        text2.setText("Destined Station: " + DESTINATION_STATION);
-        text3.setText("Direction: " + DIRECTION);
-
-
-        mHandler = new Handler();
-        //Check whether the phone supports BLE.
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             Toast.makeText(this, "BLE Not Supported",
                     Toast.LENGTH_SHORT).show();
@@ -77,92 +92,120 @@ public class TripMonitorActivity extends AppCompatActivity {
         }
         final BluetoothManager bluetoothManager =
                 (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        bleAdapter = bluetoothManager.getAdapter();
-        loadStationsBeaconsFromFile();
-
-
-
-    }
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (bleAdapter == null || !bleAdapter.isEnabled()) {
+        bleDev = bluetoothManager.getAdapter();
+        if (bleDev == null || !bleDev.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         } else {
-            if (Build.VERSION.SDK_INT >= 21) {
-                mLEScanner = bleAdapter.getBluetoothLeScanner();
-                settings = new ScanSettings.Builder()
-                        .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-                       // .setScanMode(ScanSettings.SCAN_MODE_BALANCED)
-                        .build();
-
-            }
-            scanLeDevice(true);
+            toggleScan();
         }
+
+        loadStationsBeaconsFromFile();
+
+        TextView departure = (TextView) findViewById(R.id.textView2);
+        TextView destination = (TextView) findViewById(R.id.textView6);
+        departure.setText(DEPARTURE_STATION);
+        destination.setText(DESTINATION_STATION);
+        ((SlideView) findViewById(R.id.slideView)).setOnSlideCompleteListener(new SlideView.OnSlideCompleteListener() {
+            @Override
+            public void onSlideComplete(SlideView slideView) {
+                if (r != null) {
+                    if (r.isPlaying()) {
+                        r.stop();
+                        vibrator.cancel();
+                    }
+                }
+                Intent intent = new Intent(TripMonitorActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (bleAdapter != null && bleAdapter.isEnabled()) {
-            scanLeDevice(false);
-        }
     }
 
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_ENABLE_BT) {
-            if (resultCode == Activity.RESULT_CANCELED) {
-                //Bluetooth not enabled.
-                finish();
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if ((requestCode == REQUEST_ENABLE_BT) && (resultCode == RESULT_OK)) {
+            toggleScan();
+
+
+            boolean isEnabling = bleDev.enable();
+            if (!isEnabling) {
+                // an immediate error occurred - perhaps the bluetooth is already on?
+            } else if (bleDev.getState() == BluetoothAdapter.STATE_TURNING_ON) {
+                // the system, in the background, is trying to turn the Bluetooth on
+                // while your activity carries on going without waiting for it to finish;
+                // of course, you could listen for it to finish yourself - eg, using a
+                // ProgressDialog that checked mBluetoothAdapter.getState() every x
+                // milliseconds and reported when it became STATE_ON (or STATE_OFF, if the
+                // system failed to start the Bluetooth.)
+            }
+        }
+    }
+
+    private void toggleScan() {
+        if (!isScanning)
+            startScan();
+        else
+            stopScan();
+    }
+
+    private void startScan() {
+        if (scanner == null) {
+            scanner = bleDev.getBluetoothLeScanner();
+            if (scanner == null) {
+                // probably tried to start a scan without granting Bluetooth permission
+                Toast.makeText(this, "Failed to start scan (BT permission granted?)", Toast.LENGTH_LONG).show();
+                Log.w(TAG, "Failed to get BLE scanner instance");
                 return;
             }
         }
-        super.onActivityResult(requestCode, resultCode, data);
+
+        List<ScanFilter> filters = new ArrayList<>();
+        ScanSettings settings = new ScanSettings.Builder().setScanMode(scanMode).build();
+        scanner.startScan(filters, settings, bleScanCallback);
+        isScanning = true;
     }
 
-    private void scanLeDevice(final boolean enable) {
-        if (enable)
-            mLEScanner.startScan(mScanCallback);
-        else
-            mLEScanner.stopScan(mScanCallback);
+    private void stopScan() {
+        if (scanner != null && isScanning) {
+            // Toast.makeText(this, "Stopping BLE scan...", Toast.LENGTH_SHORT).show();
+            isScanning = false;
+            Log.i(TAG, "Scan stopped");
+            scanner.stopScan(bleScanCallback);
+        }
+
+        selectedBeacon = null;
     }
 
-//    private void scanLeDevice(final boolean enable) {
-//        if (enable) {
-//            mHandler.postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                        mLEScanner.stopScan(mScanCallback);
-//                }
-//            }, SCAN_PERIOD);
-//
-//               // mLEScanner.startScan(filters, settings, mScanCallback);
-//           // mLEScanner.startScan(filters, settings, mScanCallback);
-//            mLEScanner.startScan(mScanCallback);
-//
-//        }
-//        else {
-//
-//                mLEScanner.stopScan(mScanCallback);
-//
-//        }
-//    }
 
 
-    private ScanCallback mScanCallback = new ScanCallback() {
+    private ScanCallback bleScanCallback = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
-            Log.i("callbackType", String.valueOf(callbackType));
-            Log.i("result", result.toString());
-            //text4.setText("result "+ result.toString());
-
             String address = result.getDevice().toString();
             String station = beaconStationMap.get(address);
-            text4.setText("Current Station "+ station);
-
+            if (station != null) {
+                Log.d("STOP", PREVIOUS_STOP);
+                if (station.equals(PREVIOUS_STOP)) {
+                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+                    r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                    r.play();
+                    vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                    vibrator.vibrate(10000);
+                    stopScan();
+                }
+            }
         }
 
         @Override
@@ -178,20 +221,36 @@ public class TripMonitorActivity extends AppCompatActivity {
         }
     };
 
-    private BluetoothAdapter.LeScanCallback mLeScanCallback =
-            new BluetoothAdapter.LeScanCallback() {
-                @Override
-                public void onLeScan(final BluetoothDevice device, int rssi,
-                                     byte[] scanRecord) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.i("onLeScan", device.toString());
-
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(TripMonitorActivity.this, android.R.style.Theme_Material_Dialog_Alert);
+        builder.setMessage("Going back will terminate the current trip. Are you sure you want to proceed?")
+                .setTitle("Cancel Trip?")
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        stopScan();
+                        if (r != null) {
+                            if (r.isPlaying()) {
+                                r.stop();
+                            }
                         }
-                    });
-                }
-            };
+                        if (vibrator != null) {
+                            if (vibrator.hasVibrator()) {
+                                vibrator.cancel();
+                            }
+                        }
+                        TripMonitorActivity.super.onBackPressed();
+                    }
+                })
+                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        TripMonitorActivity.this.onResume();
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert);
+        builder.show();
+
+    }
 
 
     private void loadStationsBeaconsFromFile() {
@@ -202,11 +261,28 @@ public class TripMonitorActivity extends AppCompatActivity {
             InputStream ins = getApplicationContext().getResources().getAssets().open("beacons");
             reader = new BufferedReader(new InputStreamReader(ins));
             record = reader.readLine();
-            data = record.split("=");
-            beaconStationMap.put(data[0], data[1]);
+            while(record != null) {
+                data = record.split("=");
+                beaconStationMap.put(data[0], data[1]);
+                record = reader.readLine();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    class MyBounceInterpolator implements android.view.animation.Interpolator {
+        double mAmplitude = 1;
+        double mFrequency = 10;
+
+        MyBounceInterpolator(double amplitude, double frequency) {
+            mAmplitude = amplitude;
+            mFrequency = frequency;
+        }
+
+        public float getInterpolation(float time) {
+            return (float) (-1 * Math.pow(Math.E, -time/ mAmplitude) *
+                    Math.cos(mFrequency * time) + 1);
+        }
+    }
 }
