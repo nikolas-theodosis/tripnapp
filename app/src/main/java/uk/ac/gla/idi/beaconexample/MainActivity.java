@@ -1,5 +1,6 @@
 package uk.ac.gla.idi.beaconexample;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -14,7 +15,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -75,19 +75,18 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton exitButton = (FloatingActionButton) findViewById(R.id.btnExit);
         exitButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, android.R.style.Theme_Material_Dialog_Alert);
+                builder.setMessage("Do you want to exit Tripnapp?")
                         .setTitle("Exit")
-                        .setMessage("Do you want to exit Tripnapp?")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 finish();
                                 System.exit(0);
                             }
                         })
                         .setNegativeButton("No", null)
-                        .show();
+                        .setIcon(android.R.drawable.ic_menu_close_clear_cancel);
+                builder.show();
             }
         });
     }
