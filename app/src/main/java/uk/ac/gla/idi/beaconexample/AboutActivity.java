@@ -2,12 +2,11 @@ package uk.ac.gla.idi.beaconexample;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
-/**
- * Created by Michalis on 24-Feb-17.
- */
 
-public class AboutActivity extends Activity {
+
+public class AboutActivity extends AppCompatActivity {
 
     /**
      * This method is triggered when the user presses the "About" button.
