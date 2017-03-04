@@ -10,6 +10,7 @@
     <!-- also required for scanning on newer versions of Android (>=6.0/M) -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <uses-permission android:name="android.permission.VIBRATE"/>
     <!-- indicates that the app is intended for BLE-capable devices only -->
     <uses-feature
         android:name="android.hardware.bluetooth_le"
@@ -31,18 +32,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SelectLineActivity"
+        <activity
+            android:name=".SelectLineActivity"
             android:label="@string/select_line_title"
-            android:parentActivityName=".MainActivity" /> 
-        <activity android:name=".SelectDestinationActivity"/><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-	     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+            android:parentActivityName=".MainActivity" />
         <activity android:name=".TripMonitorActivity"
-            android:label="Sit back and enjoy your nap!"
-            android:parentActivityName=".SelectDestinationActivity" />
-        <activity android:name=".AboutActivity"
-                  android:theme = "@android:style/Theme.Dialog"/>
-
-
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".AboutActivity"
+            android:theme="@android:style/Theme.Dialog" />
     </application>
 
 </manifest>
