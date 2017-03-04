@@ -64,6 +64,7 @@ public class TripMonitorActivity extends AppCompatActivity {
     private BluetoothLeScanner scanner = null;
     private int scanMode = ScanSettings.SCAN_MODE_BALANCED;
     private Vibrator vibrator;
+    private boolean WAKE_UP_FLAG = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -219,14 +220,11 @@ public class TripMonitorActivity extends AppCompatActivity {
             String address = result.getDevice().toString();
             String station = beaconStationMap.get(address);
             if (station != null) {
-                Log.d("STOP", PREVIOUS_STOP);
-                if (station.equals(PREVIOUS_STOP)) {
-                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-                    r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-                    r.play();
-                    vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-                    vibrator.vibrate(10000);
-                    stopScan();
+                if (station.equals(DEPARTURE_STATION)) {
+                    if (!WAKE_UP_FLAG) {
+                        WAKE_UP_FLAG = true;
+                        wakeup();
+                    }
                 }
             }
         }
@@ -243,6 +241,39 @@ public class TripMonitorActivity extends AppCompatActivity {
             Log.e("Scan Failed", "Error Code: " + errorCode);
         }
     };
+
+    public void wakeup() {
+        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+        r.play();
+        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        vibrator.vibrate(10000);
+        stopScan();
+        AlertDialog.Builder builder = new AlertDialog.Builder(TripMonitorActivity.this, android.R.style.Theme_Material_Dialog_Alert);
+        builder.setMessage("You must get off in the next station. The alarm will go off. Are you awake?")
+                .setTitle("Wake up!")
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        stopScan();
+                        if (r != null) {
+                            if (r.isPlaying()) {
+                                r.stop();
+                            }
+                        }
+                        if (vibrator != null) {
+                            if (vibrator.hasVibrator()) {
+                                vibrator.cancel();
+                            }
+                        }
+                        WAKE_UP_FLAG = false;
+//                        Intent intent = new Intent(TripMonitorActivity.this, MainActivity.class);
+//                        startActivity(intent);
+                    }
+                })
+                .setCancelable(false)
+                .setIcon(android.R.drawable.ic_dialog_alert);
+        builder.show();
+    }
 
     @Override
     public void onBackPressed() {
