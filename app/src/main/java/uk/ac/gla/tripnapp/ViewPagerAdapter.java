@@ -1,4 +1,4 @@
-package uk.ac.gla.idi.beaconexample;
+package uk.ac.gla.tripnapp;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

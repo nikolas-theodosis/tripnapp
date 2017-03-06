@@ -1,4 +1,4 @@
-package uk.ac.gla.idi.beaconexample;
+package uk.ac.gla.tripnapp;
 
 import android.content.Context;
 import android.graphics.Color;

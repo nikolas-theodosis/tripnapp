@@ -4,7 +4,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion '25.0.0'
     defaultConfig {
-        applicationId "uk.ac.gla.idi.beaconexample"
+        applicationId "uk.ac.gla.tripnapp"
         minSdkVersion 21
         targetSdkVersion 22
         versionCode 1

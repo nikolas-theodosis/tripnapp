@@ -1,4 +1,4 @@
-package uk.ac.gla.idi.beaconexample;
+package uk.ac.gla.tripnapp;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -61,7 +61,6 @@ public class InnerDestinationsFragment extends ListFragment implements AdapterVi
                 //v.setBackgroundColor(Color.RED);
                 selected = true;
                 DESTINATION_STATION = getListAdapter().getItem(position).toString();
-                Toast.makeText(getContext(), getListAdapter().getItem(position).toString() + " Is selected", Toast.LENGTH_LONG).show();
             }
 
             if (l.getCheckedItemPosition() == position) {
@@ -83,6 +82,7 @@ public class InnerDestinationsFragment extends ListFragment implements AdapterVi
                             bundle.putStringArrayList("NEXT_STOPS", nextStops);
                             intent.putExtras(bundle);
                             startActivity(intent);
+
                         }
                     })
                     .setNegativeButton("Go back", new DialogInterface.OnClickListener() {
