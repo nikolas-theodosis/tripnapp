@@ -67,8 +67,17 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton aboutButton = (FloatingActionButton) findViewById(R.id.btnAbout);
         aboutButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, AboutActivity.class);
-                startActivity(i);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, android.R.style.Theme_Material_Dialog_Alert);
+                builder.setMessage(R.string.about_context)
+                        .setTitle("About us")
+                        .setPositiveButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+
+                            }
+                        })
+                        .setCancelable(true)
+                        .setIcon(android.R.drawable.ic_dialog_info);
+                builder.show();
             }
         });
 

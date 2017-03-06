@@ -37,12 +37,9 @@
             android:label="@string/select_line_title"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".TripMonitorActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name=".AboutActivity"
-            android:label="About us"
-            android:parentActivityName=".MainActivity" />
-             />
+            android:screenOrientation="portrait"/><![CDATA[
+        />
+    ]]>
     </application>
 
 </manifest>
