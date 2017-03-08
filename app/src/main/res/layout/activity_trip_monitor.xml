@@ -129,30 +129,5 @@
             android:textColor="@color/colorPrimary"
             android:textStyle="normal|italic" />
 
-
-        <!--<ImageView-->
-            <!--android:id="@+id/imageView1"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:src="@mipmap/stop"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:clickable="true"/>-->
-
-        <!--<TextView-->
-            <!--android:id="@+id/textview1"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="top"-->
-            <!--/>-->
-
-        <!--<TextView-->
-            <!--android:id="@+id/textview2"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="bottom"-->
-            <!--/>-->
-
-
-
     </RelativeLayout>
 </ScrollView>
