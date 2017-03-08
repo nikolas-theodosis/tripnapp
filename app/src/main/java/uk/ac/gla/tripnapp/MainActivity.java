@@ -114,8 +114,11 @@ public class MainActivity extends AppCompatActivity {
             InputStream ins = getApplicationContext().getResources().getAssets().open("beacons");
             reader = new BufferedReader(new InputStreamReader(ins));
             record = reader.readLine();
-            data = record.split("=");
-            beaconStationMap.put(data[0], data[1]);
+            while(record != null) {
+                data = record.split("=");
+                beaconStationMap.put(data[0], data[1]);
+                record = reader.readLine();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
