@@ -49,6 +49,7 @@ public class TripMonitorActivity extends AppCompatActivity {
     private ScanSettings settings;
     private String DESTINATION_STATION;
     private String DEPARTURE_STATION;
+    private String CURRENT_STOP;
     private String DIRECTION;
     private ArrayList<String> next_stops = new ArrayList<>();
     private String PREVIOUS_STOP;
@@ -60,6 +61,8 @@ public class TripMonitorActivity extends AppCompatActivity {
     private int scanMode = ScanSettings.SCAN_MODE_BALANCED;
     private Vibrator vibrator;
     private boolean WAKE_UP_FLAG = false;
+    private TextView departure;
+    private TextView destination;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +83,7 @@ public class TripMonitorActivity extends AppCompatActivity {
             }
         }
         PREVIOUS_STOP = next_stops.get(pos);
-
+        CURRENT_STOP = DEPARTURE_STATION;
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             finish();
         }
@@ -96,8 +99,8 @@ public class TripMonitorActivity extends AppCompatActivity {
 
         loadStationsBeaconsFromFile();
 
-        TextView departure = (TextView) findViewById(R.id.textView2);
-        TextView destination = (TextView) findViewById(R.id.textView6);
+        departure = (TextView) findViewById(R.id.textView2);
+        destination = (TextView) findViewById(R.id.textView6);
         departure.setText(DEPARTURE_STATION);
         destination.setText(DESTINATION_STATION);
         ((SlideView) findViewById(R.id.slideView)).setOnSlideCompleteListener(new SlideView.OnSlideCompleteListener() {
@@ -213,11 +216,16 @@ public class TripMonitorActivity extends AppCompatActivity {
             String address = result.getDevice().toString();
             String station = beaconStationMap.get(address);
             if (station != null) {
-                if (station.equals(DEPARTURE_STATION)) {
+                if (station.equals(PREVIOUS_STOP)) {
                     if (!WAKE_UP_FLAG) {
                         WAKE_UP_FLAG = true;
                         wakeup();
                     }
+                }
+                else if(!station.equals(CURRENT_STOP)) {
+                    departure = (TextView) findViewById(R.id.textView2);
+                    departure.setText(station);
+                    CURRENT_STOP = station;
                 }
             }
         }
