@@ -35,7 +35,6 @@ public class OuterDestinationsFragment extends ListFragment implements AdapterVi
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Bundle bundle = this.getArguments();
-        //selected=false;
         if (bundle != null) {
             DEPARTURE_STATION = bundle.getString("DEPARTURE_STATION", "");
             stations = bundle.getStringArrayList("STATIONS");
@@ -55,14 +54,11 @@ public class OuterDestinationsFragment extends ListFragment implements AdapterVi
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        // TODO implement some logic
         pos = position;
         if (position != 0) {
             while (selected == false) {
-                //v.setBackgroundColor(Color.RED);
                 selected = true;
                 DESTINATION_STATION = getListAdapter().getItem(position).toString();
-                Toast.makeText(getContext(), getListAdapter().getItem(position).toString() + " Is selected", Toast.LENGTH_LONG).show();
             }
 
             if (l.getCheckedItemPosition() == position) {

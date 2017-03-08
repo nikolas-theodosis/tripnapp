@@ -18,7 +18,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -166,7 +165,6 @@ public class MainActivity extends AppCompatActivity {
             scanner = bleDev.getBluetoothLeScanner();
             if (scanner == null) {
                 // probably tried to start a scan without granting Bluetooth permission
-                Toast.makeText(this, "Failed to start scan (BT permission granted?)", Toast.LENGTH_LONG).show();
                 Log.w(TAG, "Failed to get BLE scanner instance");
                 return;
             }
@@ -186,7 +184,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void stopScan() {
         if (scanner != null && isScanning) {
-            // Toast.makeText(this, "Stopping BLE scan...", Toast.LENGTH_SHORT).show();
             isScanning = false;
             Log.i(TAG, "Scan stopped");
             scanner.stopScan(bleScanCallback);

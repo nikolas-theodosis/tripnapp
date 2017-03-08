@@ -54,11 +54,9 @@ public class InnerDestinationsFragment extends ListFragment implements AdapterVi
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        // TODO implement some logic
         pos = position;
         if (position != 0) {
             while (selected == false) {
-                //v.setBackgroundColor(Color.RED);
                 selected = true;
                 DESTINATION_STATION = getListAdapter().getItem(position).toString();
             }

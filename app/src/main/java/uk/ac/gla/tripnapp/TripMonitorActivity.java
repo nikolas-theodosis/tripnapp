@@ -23,7 +23,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 
@@ -83,8 +82,6 @@ public class TripMonitorActivity extends AppCompatActivity {
         PREVIOUS_STOP = next_stops.get(pos);
 
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-            Toast.makeText(this, "BLE Not Supported",
-                    Toast.LENGTH_SHORT).show();
             finish();
         }
         final BluetoothManager bluetoothManager =
@@ -187,7 +184,6 @@ public class TripMonitorActivity extends AppCompatActivity {
             scanner = bleDev.getBluetoothLeScanner();
             if (scanner == null) {
                 // probably tried to start a scan without granting Bluetooth permission
-                Toast.makeText(this, "Failed to start scan (BT permission granted?)", Toast.LENGTH_LONG).show();
                 Log.w(TAG, "Failed to get BLE scanner instance");
                 return;
             }
@@ -201,7 +197,6 @@ public class TripMonitorActivity extends AppCompatActivity {
 
     private void stopScan() {
         if (scanner != null && isScanning) {
-            // Toast.makeText(this, "Stopping BLE scan...", Toast.LENGTH_SHORT).show();
             isScanning = false;
             Log.i(TAG, "Scan stopped");
             scanner.stopScan(bleScanCallback);

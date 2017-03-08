@@ -50,8 +50,7 @@ public class SelectLineActivity extends AppCompatActivity {
     private void loadStationsFromFile() {
         BufferedReader reader;
         String record;
-        String[] data;
-        InputStream ins = null;
+        InputStream ins;
         try {
             ins = getApplicationContext().getResources().getAssets().open("stations");
             reader = new BufferedReader(new InputStreamReader(ins));
