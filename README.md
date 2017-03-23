@@ -1,0 +1,1 @@
+Tripnapp is an application that will let you take a nap while riding the subway and wake you up when you reach your destination. When you start a trip, the bluetooth interface will scan for associated to your departure station beacons. Then you will have to select your destination and that's all. Relax, take a nap and Tripnapp will do the rest!
